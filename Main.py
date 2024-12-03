@@ -48,6 +48,13 @@ LARGEUR = 600
 HAUTEUR = 600
 fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 clock = pygame.time.Clock()
+fond = pygame.sprite.Sprite()
+pygame.sprite.Sprite.__init__(fond)
+fond.image = pygame.image.load("background (2).png").convert()
+fond.rect = fond.image.get_rect()
+# Coordonnées de l’image
+fond.rect.x = 0
+fond.rect.y = 0
 vaisseau = Vaisseau()
 liste_des_sprites = pygame.sprite.LayeredUpdates()
 liste_des_sprites.add(vaisseau)
