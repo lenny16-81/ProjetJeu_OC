@@ -33,19 +33,20 @@ class Ennemi(pygame.sprite.Sprite):
 
 pygame.init()
 LARGEUR = 600
-HAUTEUR = 600
+HAUTEUR = 800
 fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 clock = pygame.time.Clock()
 
 fond = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(fond)
-fond.image = pygame.image.load("background.png").convert()
+fond.image = pygame.image.load("Route.png").convert()
 fond.rect = fond.image.get_rect()
 # Coordonnées de l’image
 fond.rect.x = 0
 fond.rect.y = 0
 voiture = Voiture()
 liste_des_sprites = pygame.sprite.LayeredUpdates()
+liste_des_sprites.add(fond)
 liste_des_sprites.add(voiture)
 gameover = False
 police = pygame.font.Font(None, 36)
@@ -85,7 +86,7 @@ while running:
    for ennemi in ennemis:
        ennemi.update()
        for ennemi in ennemis:
-           if ennemi.rect.y > 550 :
+           if ennemi.rect.y > 850 :
                ennemis.remove(ennemi)
                ennemi.kill()
                ennemi_manque += 1
