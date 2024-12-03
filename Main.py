@@ -8,6 +8,7 @@ class Vaisseau(pygame.sprite.Sprite):
    def __init__(self):
        super().__init__() #Appel obligatoire
        self.image = pygame.image.load("voiture.png").convert_alpha()
+
        self.rect = self.image.get_rect()
        self.rect.x = LARGEUR/2
        self.rect.y = HAUTEUR-70
@@ -48,6 +49,14 @@ LARGEUR = 600
 HAUTEUR = 600
 fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 clock = pygame.time.Clock()
+
+fond = pygame.sprite.Sprite()
+pygame.sprite.Sprite.__init__(fond)
+fond.image = pygame.image.load("background (2).png").convert()
+fond.rect = fond.image.get_rect()
+# Coordonnées de l’image
+fond.rect.x = 0
+fond.rect.y = 0
 vaisseau = Vaisseau()
 liste_des_sprites = pygame.sprite.LayeredUpdates()
 liste_des_sprites.add(vaisseau)
@@ -129,3 +138,4 @@ while running:
    pygame.display.flip()
    clock.tick(180)
 pygame.quit()
+
