@@ -4,10 +4,10 @@ import pygame
 import random
 from pygame.locals import *
 
-class Vaisseau(pygame.sprite.Sprite):
+class Voiture(pygame.sprite.Sprite):
    def __init__(self):
        super().__init__() #Appel obligatoire
-       self.image = pygame.image.load("voiture.png").convert_alpha()
+       self.image = pygame.image.load("Voiture_Orange.png").convert_alpha()
 
        self.rect = self.image.get_rect()
        self.rect.x = LARGEUR/2
@@ -17,19 +17,6 @@ class Vaisseau(pygame.sprite.Sprite):
         self.rect.x += self.vitesse
    def bouger_gauche(self):
         self.rect.x -= self.vitesse
-
-class Missile(pygame.sprite.Sprite):
-   def __init__(self, x, y):
-       super().__init__()
-       self.image = pygame.image.load("missile.png").convert_alpha()
-       self.rect = self.image.get_rect()
-       self.rect.x = x
-       self.rect.y = y
-       self.speed = 2
-   def update(self):
-       self.rect.y -= self.speed
-       if self.rect.bottom < 0:
-           self.kill()  # Supprime le sprite quand il sort de l'écran
 
 class Ennemi(pygame.sprite.Sprite):
    def __init__(self, x, y):
@@ -52,14 +39,14 @@ clock = pygame.time.Clock()
 
 fond = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(fond)
-fond.image = pygame.image.load("background (2).png").convert()
+fond.image = pygame.image.load("background.png").convert()
 fond.rect = fond.image.get_rect()
 # Coordonnées de l’image
 fond.rect.x = 0
 fond.rect.y = 0
-vaisseau = Vaisseau()
+voiture = Voiture()
 liste_des_sprites = pygame.sprite.LayeredUpdates()
-liste_des_sprites.add(vaisseau)
+liste_des_sprites.add(voiture)
 gameover = False
 police = pygame.font.Font(None, 36)
 texte = pygame.sprite.Sprite()
@@ -67,7 +54,6 @@ lescore = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(texte)
 pygame.sprite.Sprite.__init__(lescore)
 
-missiles = []
 ennemis = []
 score = 0
 ennemi_manque = 0
@@ -81,15 +67,9 @@ while running:
            running = False
        if event.type == KEYDOWN:
            if event.key == K_a:
-               vaisseau.bouger_gauche()
+               voiture.bouger_gauche()
            if event.key == K_d:
-               vaisseau.bouger_droite()
-           if event.key == K_SPACE:
-               nouveau_missile = Missile(vaisseau.rect.x + 10, vaisseau.rect.y - 10)
-               missiles.append(nouveau_missile)
-               liste_des_sprites.add(nouveau_missile)
-           for missile in missiles:
-               missile.update()
+               voiture.bouger_droite()
    nombre_aleatoire = random.randint(0, 100)
    if game:
        if nombre_aleatoire == 0:
@@ -104,26 +84,18 @@ while running:
        liste_des_sprites.add(lescore)
    for ennemi in ennemis:
        ennemi.update()
-   for missile in missiles:
-       missile.update()
        for ennemi in ennemis:
-           if ennemi.rect.colliderect(missile.rect):
-               ennemis.remove(ennemi)
-               missiles.remove(missile)
-               ennemi.kill()
-               missile.kill()
-               score += 1
            if ennemi.rect.y > 550 :
                ennemis.remove(ennemi)
                ennemi.kill()
                ennemi_manque += 1
    for ennemi in ennemis:
-       if ennemi.rect.colliderect(vaisseau.rect):
+       if ennemi.rect.colliderect(voiture.rect):
            ennemis.remove(ennemi)
            ennemi.kill()
-           vaisseau.kill()
-           vaisseau.rect.x = 8000
-           vaisseau.rect.y = 8000
+           voiture.kill()
+           voiture.rect.x = 8000
+           voiture.rect.y = 8000
            texte.image = police.render(f"Game Over \n Votre score: {score} \n Ennemis ratés: {ennemi_manque} !", 1, (10, 10, 10),(150, 150, 150))
            texte.rect = texte.image.get_rect()
            texte.rect.centerx = fenetre.get_rect().centerx
