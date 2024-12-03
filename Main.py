@@ -96,7 +96,7 @@ while running:
            voiture.kill()
            voiture.rect.x = 8000
            voiture.rect.y = 8000
-           texte.image = police.render(f"Game Over \n Votre score: {score} \n Ennemis ratés: {ennemi_manque} !", 1, (10, 10, 10),(150, 150, 150))
+           texte.image = police.render(f"Game Over \n Votre score: {score} \n Ennemis ésquivés: {ennemi_manque} !", 1, (10, 10, 10),(150, 150, 150))
            texte.rect = texte.image.get_rect()
            texte.rect.centerx = fenetre.get_rect().centerx
            texte.rect.centery = fenetre.get_rect().centery
