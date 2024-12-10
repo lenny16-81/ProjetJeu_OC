@@ -7,7 +7,7 @@ from pygame.locals import *
 class Voiture(pygame.sprite.Sprite):
    def __init__(self):
        super().__init__() #Appel obligatoire
-       self.image = pygame.image.load("Voiture_Orange.png").convert_alpha()
+       self.image = pygame.image.load("Voiture_Rouge.png").convert_alpha()
 
        self.rect = self.image.get_rect()
        self.rect.x = LARGEUR/2
