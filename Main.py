@@ -66,11 +66,14 @@ while running:
    for event in pygame.event.get():
        if event.type == pygame.QUIT:
            running = False
+
        if event.type == KEYDOWN:
-           if event.key == K_a:
-               voiture.bouger_gauche()
-           if event.key == K_d:
-               voiture.bouger_droite()
+           if voiture.rect.x > 100:
+               if event.key == K_a:
+                   voiture.bouger_gauche()
+           if voiture.rect.x < 460:
+               if event.key == K_d:
+                   voiture.bouger_droite()
    nombre_aleatoire = random.randint(0, 100)
    if game:
        if nombre_aleatoire == 0:
