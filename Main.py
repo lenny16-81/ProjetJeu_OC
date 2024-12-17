@@ -50,9 +50,11 @@ liste_des_sprites.add(fond)
 liste_des_sprites.add(voiture)
 gameover = False
 police = pygame.font.Font(None, 36)
-texte = pygame.sprite.Sprite()
+texte1 = pygame.sprite.Sprite()
+texte2 = pygame.sprite.Sprite()
 lescore = pygame.sprite.Sprite()
-pygame.sprite.Sprite.__init__(texte)
+pygame.sprite.Sprite.__init__(texte1)
+pygame.sprite.Sprite.__init__(texte2)
 pygame.sprite.Sprite.__init__(lescore)
 
 ennemis = []
@@ -66,7 +68,6 @@ while running:
    for event in pygame.event.get():
        if event.type == pygame.QUIT:
            running = False
-
        if event.type == KEYDOWN:
            if voiture.rect.x > 100:
                if event.key == K_a:
@@ -74,8 +75,19 @@ while running:
            if voiture.rect.x < 460:
                if event.key == K_d:
                    voiture.bouger_droite()
+           if game == False:
+               if event.key == K_r:
+                   voiture.rect.x = LARGEUR/2
+                   voiture.rect.y = HAUTEUR-70
+                   liste_des_sprites.add(voiture)
+                   liste_des_sprites.draw(fenetre)
+                   ennemi_manque = 0
+                   score = 0
+                   game = True
    nombre_aleatoire = random.randint(0, 100)
    if game:
+       liste_des_sprites.remove(texte1)
+       liste_des_sprites.remove(texte2)
        if nombre_aleatoire == 0:
            position_x_aleatoire = random.randint(0, LARGEUR - 50)
            nouvel_ennemi = Ennemi(position_x_aleatoire, -50)
@@ -93,6 +105,7 @@ while running:
                ennemis.remove(ennemi)
                ennemi.kill()
                ennemi_manque += 1
+               score += 10
    for ennemi in ennemis:
        if ennemi.rect.colliderect(voiture.rect):
            ennemis.remove(ennemi)
@@ -100,15 +113,21 @@ while running:
            voiture.kill()
            voiture.rect.x = 8000
            voiture.rect.y = 8000
-           texte.image = police.render(f"Game Over \n Votre score: {score} \n Ennemis ésquivés: {ennemi_manque} !", 1, (10, 10, 10),(150, 150, 150))
-           texte.rect = texte.image.get_rect()
-           texte.rect.centerx = fenetre.get_rect().centerx
-           texte.rect.centery = fenetre.get_rect().centery
-           liste_des_sprites.add(texte)
+           texte1.image = police.render(f"Game Over \n Votre score: {score} \n Ennemis ésquivés: {ennemi_manque} !", 1, (10, 10, 10),(150, 150, 150))
+           texte1.rect = texte1.image.get_rect()
+           texte1.rect.centerx = fenetre.get_rect().centerx
+           texte1.rect.centery = fenetre.get_rect().centery
+           texte2.image = police.render(f"Appuyez sur R pour recommencer", 1, (10, 10, 10), (150, 150, 150))
+           texte2.rect = texte2.image.get_rect()
+           texte2.rect.centerx = fenetre.get_rect().centerx
+           texte2.rect.centery = fenetre.get_rect().centery + 50
+           liste_des_sprites.add(texte1)
+           liste_des_sprites.add(texte2)
            pygame.display.flip()
            game = False
    if game == False:
        liste_des_sprites.remove(lescore)
+       liste_des_sprites.remove(ennemis)
    fenetre.fill((0,0,0))
    liste_des_sprites.draw(fenetre)
    pygame.display.flip()
