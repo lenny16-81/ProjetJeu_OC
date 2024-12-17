@@ -85,7 +85,6 @@ while running:
                    voiture.rect.x = LARGEUR/4
                    voiture.rect.y = HAUTEUR-70
                    liste_des_sprites.add(voiture)
-                   liste_des_sprites.draw(fenetre)
                    ennemi_manque = 0
                    score = 0
                    game = True
@@ -131,8 +130,11 @@ while running:
            pygame.display.flip()
            game = False
    if game == False:
-       liste_des_sprites.remove(lescore)
-       liste_des_sprites.remove(ennemis)
+       for ennemi in ennemis:
+           liste_des_sprites.remove(ennemi)
+           ennemi.kill()
+       ennemis = []
+
    fenetre.fill((0,0,0))
    liste_des_sprites.draw(fenetre)
    pygame.display.flip()

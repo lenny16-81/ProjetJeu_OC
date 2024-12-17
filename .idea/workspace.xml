@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2cd86a2-10fd-468a-81ce-4a11945321f2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/ProjetJeu_OC.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ProjetJeu_OC.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
     </list>
@@ -22,7 +20,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.Main.executor": "Run",
-    "git-widget-placeholder": "Lenny1"
+    "git-widget-placeholder": "master"
   }
 }]]></component>
   <component name="TaskManager">
