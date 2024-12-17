@@ -82,7 +82,7 @@ while running:
                    voiture.bouger_droite()
            if game == False:
                if event.key == K_r:
-                   voiture.rect.x = LARGEUR/2
+                   voiture.rect.x = LARGEUR/4
                    voiture.rect.y = HAUTEUR-70
                    liste_des_sprites.add(voiture)
                    liste_des_sprites.draw(fenetre)
