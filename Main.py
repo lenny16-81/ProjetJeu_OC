@@ -21,7 +21,9 @@ class Voiture(pygame.sprite.Sprite):
 class Ennemi(pygame.sprite.Sprite):
    def __init__(self, x, y):
        super().__init__()
-       self.image = pygame.image.load("ennemi1.png").convert_alpha()
+       couleurs_voitures = ["Voiture_Blanche.png", "Voiture_Orange.png", "Voiture_Bleue.png"]
+       voiture_image = random.choice(couleurs_voitures)
+       self.image = pygame.image.load(voiture_image).convert_alpha()
        self.rect = self.image.get_rect()
        self.rect.x = x
        self.rect.y = y
@@ -44,7 +46,10 @@ fond.rect = fond.image.get_rect()
 # Coordonnées de l’image
 fond.rect.x = 0
 fond.rect.y = 0
+positions_x = [150, 280, 405]  # Positions fixes sur l'axe x
+
 voiture = Voiture()
+
 liste_des_sprites = pygame.sprite.LayeredUpdates()
 liste_des_sprites.add(fond)
 liste_des_sprites.add(voiture)
@@ -77,7 +82,7 @@ while running:
    nombre_aleatoire = random.randint(0, 100)
    if game:
        if nombre_aleatoire == 0:
-           position_x_aleatoire = random.randint(0, LARGEUR - 50)
+           position_x_aleatoire = random.choice(positions_x)  # Choisir une des 3 positions
            nouvel_ennemi = Ennemi(position_x_aleatoire, -50)
            liste_des_sprites.add(nouvel_ennemi)
            ennemis.append(nouvel_ennemi)
