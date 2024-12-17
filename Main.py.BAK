@@ -10,9 +10,9 @@ class Voiture(pygame.sprite.Sprite):
        self.image = pygame.image.load("Voiture_Rouge.png").convert_alpha()
 
        self.rect = self.image.get_rect()
-       self.rect.x = LARGEUR/4
+       self.rect.x = LARGEUR/2
        self.rect.y = HAUTEUR-70
-       self.vitesse = 130
+       self.vitesse = 20
    def bouger_droite(self):
         self.rect.x += self.vitesse
    def bouger_gauche(self):
@@ -61,17 +61,17 @@ ennemi_manque = 0
 nombre = random.randint(1, 100)
 running = True
 game = True
-pygame.key.set_repeat(400, 300)
+pygame.key.set_repeat(40, 30)
 while running:
    for event in pygame.event.get():
        if event.type == pygame.QUIT:
            running = False
 
        if event.type == KEYDOWN:
-           if voiture.rect.x > 150:
+           if voiture.rect.x > 100:
                if event.key == K_a:
                    voiture.bouger_gauche()
-           if voiture.rect.x < 400:
+           if voiture.rect.x < 460:
                if event.key == K_d:
                    voiture.bouger_droite()
    nombre_aleatoire = random.randint(0, 100)
