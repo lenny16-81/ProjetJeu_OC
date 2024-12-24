@@ -34,12 +34,12 @@ class Ennemi(pygame.sprite.Sprite):
            self.kill()
 
 class Powerup(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, y):
         super().__init__()
         self.image = pygame.image.load("Bouclier.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = random.choice(positions_x)
-        self.rect.y = -50
+        self.rect.y = y
         self.speed = 1
     def update(self):
         self.rect.y += self.speed
@@ -53,7 +53,7 @@ fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 clock = pygame.time.Clock()
 
 positions_x = [150, 280, 405]  # Positions fixes sur l'axe x
-powerup = Powerup()
+powerup = Powerup(0)
 fond = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(fond)
 fond.image = pygame.image.load("Route.png").convert()
@@ -103,6 +103,7 @@ while running:
                    liste_des_sprites.add(voiture)
                    ennemi_manque = 0
                    score = 0
+                   voiture.vie += 1
                    game = True
    nombre_aleatoire = random.randint(0, 100)
    nombre_aleatoireII = random.randint(0,5000)
@@ -172,6 +173,10 @@ while running:
        for ennemi in ennemis:
            liste_des_sprites.remove(ennemi)
            ennemi.kill()
+       for powerup in powerups:
+           liste_des_sprites.remove(powerup)
+           powerup.kill()
+       powerups = []
        ennemis = []
 
    fenetre.fill((0,0,0))
