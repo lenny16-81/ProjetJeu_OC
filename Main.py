@@ -34,7 +34,7 @@ class Ennemi(pygame.sprite.Sprite):
            self.kill()
 
 class Powerup(pygame.sprite.Sprite):
-    def __init__(self, y):
+    def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load("Bouclier.png").convert_alpha()
         self.rect = self.image.get_rect()
@@ -46,14 +46,26 @@ class Powerup(pygame.sprite.Sprite):
         if self.rect.top > HAUTEUR:
             self.kill()
 
+class Tuyeau(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.image.load("Tuyeau.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
 pygame.init()
 LARGEUR = 600
 HAUTEUR = 800
 fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 clock = pygame.time.Clock()
 
-positions_x = [150, 280, 405]  # Positions fixes sur l'axe x
-powerup = Powerup(0)
+t1 = Tuyeau(145, 0)
+t2 = Tuyeau(275, 0)
+t3 = Tuyeau(400, 0)
+
+positions_x = [145, 275, 400]  # Positions fixes sur l'axe x
+powerup = Powerup(random.choice(positions_x), 0)
 fond = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(fond)
 fond.image = pygame.image.load("Route.png").convert()
@@ -64,12 +76,18 @@ fond.rect.y = 0
 
 voiture = Voiture(1)
 
+
 liste_des_sprites = pygame.sprite.LayeredUpdates()
-liste_des_sprites.add(fond)
-liste_des_sprites.add(voiture)
-liste_des_sprites.add(powerup)
+liste_des_sprites.add(fond, layer=0)
+liste_des_sprites.add(voiture, layer=2)
+liste_des_sprites.add(powerup, layer=2)
+liste_des_sprites.add(t1, layer=3)
+liste_des_sprites.add(t2, layer=3)
+liste_des_sprites.add(t3, layer=3)
+
 gameover = False
-police = pygame.font.Font(None, 36)
+bouclier = False
+police = pygame.font.Font(None, 25)
 texte1 = pygame.sprite.Sprite()
 texte2 = pygame.sprite.Sprite()
 lescore = pygame.sprite.Sprite()
@@ -93,9 +111,13 @@ while running:
            if voiture.rect.x > 150:
                if event.key == K_a:
                    voiture.bouger_gauche()
+                   if bouclier == True:
+                       powerup.rect.x -= 130
            if voiture.rect.x < 400:
                if event.key == K_d:
                    voiture.bouger_droite()
+                   if bouclier == True:
+                       powerup.rect.x += 130
            if game == False:
                if event.key == K_r:
                    voiture.rect.x = LARGEUR/4
@@ -106,19 +128,19 @@ while running:
                    voiture.vie += 1
                    game = True
    nombre_aleatoire = random.randint(0, 100)
-   nombre_aleatoireII = random.randint(0,5000)
+   nombre_aleatoireII = random.randint(0,1000)
    if game:
        liste_des_sprites.remove(texte1)
        liste_des_sprites.remove(texte2)
        if nombre_aleatoire == 0:
            position_x_aleatoire = random.choice(positions_x)  # Choisir une des 3 positions
            nouvel_ennemi = Ennemi(position_x_aleatoire, -50)
-           liste_des_sprites.add(nouvel_ennemi)
+           liste_des_sprites.add(nouvel_ennemi, layer=2)
            ennemis.append(nouvel_ennemi)
        if nombre_aleatoireII == 0:
            position_x_aleatoireII = random.choice(positions_x)
            nouveau_powerup = Powerup(position_x_aleatoireII, -50)
-           liste_des_sprites.add(nouveau_powerup)
+           liste_des_sprites.add(nouveau_powerup, layer=2)
            powerups.append(nouveau_powerup)
 
        lescore.image = police.render(f"Score: {score}", 1, (250, 250, 250), (0, 0, 0))
@@ -135,10 +157,11 @@ while running:
                ennemi_manque += 1
                score += 10
    for ennemi in ennemis:
-       if ennemi.rect.colliderect(voiture.rect):
-           ennemis.remove(ennemi)
-           ennemi.kill()
-           voiture.vie -= 1
+       if bouclier == False:
+           if ennemi.rect.colliderect(voiture.rect):
+               ennemis.remove(ennemi)
+               ennemi.kill()
+               voiture.vie -= 1
 
    if voiture.vie == 0:
        game = False
@@ -165,9 +188,23 @@ while running:
                powerup.kill()
    for powerup in powerups:
        if powerup.rect.colliderect(voiture.rect):
-           voiture.vie += 1
-           powerup.rect.x = voiture.rect.x
-           powerup.rect.y = voiture.rect.y
+           powerup.rect.x = voiture.rect.x - 15
+           powerup.rect.y = voiture.rect.y - 10
+           bouclier = True
+           #print("Bouclier actif")
+       else:
+           bouclier = False
+           #print("Bouclier inactif")
+   for powerup in powerups:
+       for ennemi in ennemis:
+           if powerup.rect.colliderect(ennemi.rect):
+               #print("Collision entre powerup et ennemi !")
+               ennemis.remove(ennemi)
+               powerups.remove(powerup)
+               ennemi.kill()
+               powerup.kill()
+               score += 100
+               bouclier = False
 
    if game == False:
        for ennemi in ennemis:
@@ -184,4 +221,3 @@ while running:
    pygame.display.flip()
    clock.tick(180)
 pygame.quit()
-
