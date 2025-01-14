@@ -30,7 +30,9 @@
   "keyToString": {
     "Python.Main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "branche14"
+
+    "git-widget-placeholder": "TP1"
+
   }
 }]]></component>
   <component name="RunManager">
