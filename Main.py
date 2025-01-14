@@ -41,6 +41,7 @@ class Powerup(pygame.sprite.Sprite):
         self.rect.x = random.choice(positions_x)
         self.rect.y = y
         self.speed = 1
+        self.actif = False
     def update(self):
         self.rect.y += self.speed
         if self.rect.top > HAUTEUR:
@@ -76,18 +77,45 @@ fond.rect.y = 0
 
 voiture = Voiture(1)
 
-
-liste_des_sprites = pygame.sprite.LayeredUpdates()
-liste_des_sprites.add(fond, layer=0)
-liste_des_sprites.add(voiture, layer=2)
-liste_des_sprites.add(powerup, layer=2)
-liste_des_sprites.add(t1, layer=3)
-liste_des_sprites.add(t2, layer=3)
-liste_des_sprites.add(t3, layer=3)
-
 gameover = False
 bouclier = False
 police = pygame.font.Font(None, 25)
+
+titre = True
+
+for event in pygame.event.get():
+    if event.type == KEYDOWN:
+        if event.key == K_SPACE:
+            titre = False
+
+titre1 = pygame.sprite.Sprite()
+titre2 = pygame.sprite.Sprite()
+pygame.sprite.Sprite.__init__(titre1)
+pygame.sprite.Sprite.__init__(titre2)
+
+titre1.image = police.render(f"Bienvenue sur RACE CAR DRIVING", 1, (250, 250, 250), (0, 0, 0))
+titre1.rect = titre1.image.get_rect()
+titre1.rect.x = 150
+titre1.rect.y = 300
+
+titre2.image = police.render(f"Appuyez sur [ESPACE] pour commencer à jouer", 1, (250, 250, 250), (0, 0, 0))
+titre2.rect = titre1.image.get_rect()
+titre2.rect.x = 100
+titre2.rect.y = 400
+
+liste_des_sprites = pygame.sprite.LayeredUpdates()
+if not titre:
+    liste_des_sprites.add(fond, layer=0)
+    liste_des_sprites.add(voiture, layer=2)
+    liste_des_sprites.add(powerup, layer=2)
+    liste_des_sprites.add(t1, layer=3)
+    liste_des_sprites.add(t2, layer=3)
+    liste_des_sprites.add(t3, layer=3)
+if titre:
+    liste_des_sprites.add(titre1, layer=2)
+    liste_des_sprites.add(titre2, layer=2)
+
+
 texte1 = pygame.sprite.Sprite()
 texte2 = pygame.sprite.Sprite()
 lescore = pygame.sprite.Sprite()
@@ -100,12 +128,25 @@ powerups = []
 score = 0
 ennemi_manque = 0
 nombre = random.randint(1, 100)
-titre = False
+
 running = True
 game = True
 pygame.key.set_repeat(400, 300)
 while running:
-   if titre == False:
+   if titre:
+       for event in pygame.event.get():
+           if event.type == KEYDOWN:
+               if event.key == K_SPACE:
+                   titre = False
+   if not titre:
+       liste_des_sprites.remove(titre1)
+       liste_des_sprites.remove(titre2)
+       liste_des_sprites.add(fond, layer=0)
+       liste_des_sprites.add(voiture, layer=2)
+       liste_des_sprites.add(powerup, layer=2)
+       liste_des_sprites.add(t1, layer=3)
+       liste_des_sprites.add(t2, layer=3)
+       liste_des_sprites.add(t3, layer=3)
        for event in pygame.event.get():
            if event.type == pygame.QUIT:
                running = False
@@ -183,24 +224,27 @@ while running:
            pygame.display.flip()
 
        for powerup in powerups:
-           powerup.update()
-           for powerup in powerups:
-               if powerup.rect.y > 850:
-                   powerups.remove(powerup)
-                   powerup.kill()
+           if powerup.rect.y > 850:
+               powerups.remove(powerup)
+               powerup.kill()
+               liste_des_sprites.remove(powerup)
        for powerup in powerups:
-           if powerup.rect.colliderect(voiture.rect):
+           if powerup.actif:
                powerup.rect.x = voiture.rect.x - 15
                powerup.rect.y = voiture.rect.y - 10
-               bouclier = True
-               #print("Bouclier actif")
            else:
-               bouclier = False
+               powerup.update()
+
+           if powerup.rect.colliderect(voiture.rect):
+               powerup.actif = True
+               #print("Bouclier actif")
                #print("Bouclier inactif")
        for powerup in powerups:
+           if not powerup.actif:
+               continue
            for ennemi in ennemis:
                if powerup.rect.colliderect(ennemi.rect):
-                   #print("Collision entre powerup et ennemi !")
+                   print("Collision entre powerup et ennemi !")
                    ennemis.remove(ennemi)
                    powerups.remove(powerup)
                    ennemi.kill()
@@ -209,12 +253,13 @@ while running:
                    bouclier = False
 
        if game == False:
-           for ennemi in ennemis:
-               liste_des_sprites.remove(ennemi)
-               ennemi.kill()
-           for powerup in powerups:
-               liste_des_sprites.remove(powerup)
-               powerup.kill()
+           liste_des_sprites.empty()
+           liste_des_sprites.add(fond)
+           liste_des_sprites.add(texte1)
+           liste_des_sprites.add(texte2)
+           liste_des_sprites.add(t1, layer=3)
+           liste_des_sprites.add(t2, layer=3)
+           liste_des_sprites.add(t3, layer=3)
            powerups = []
            ennemis = []
 
