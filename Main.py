@@ -24,6 +24,7 @@ class Ennemi(pygame.sprite.Sprite):
        couleurs_voitures = ["Voiture_Blanche.png", "Voiture_Orange.png", "Voiture_Bleue.png"]
        voiture_image = random.choice(couleurs_voitures)
        self.image = pygame.image.load(voiture_image).convert_alpha()
+       self.image = pygame.transform.flip(self.image, False, True)
        self.rect = self.image.get_rect()
        self.rect.x = x
        self.rect.y = y
@@ -211,7 +212,7 @@ while running:
            voiture.kill()
            voiture.rect.x = 8000
            voiture.rect.y = 8000
-           texte1.image = police.render(f"Game Over \n Votre score: {score} \n Ennemis ésquivés: {ennemi_manque} !", 1, (10, 10, 10),(150, 150, 150))
+           texte1.image = police.render(f"Game Over \n Votre score: {score} \n Ennemis ésquivés: {ennemi_manque} !", 1, (10, 10, 10), (150, 150, 150))
            texte1.rect = texte1.image.get_rect()
            texte1.rect.centerx = fenetre.get_rect().centerx
            texte1.rect.centery = fenetre.get_rect().centery
