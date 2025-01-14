@@ -80,6 +80,7 @@ voiture = Voiture(1)
 gameover = False
 bouclier = False
 police = pygame.font.Font(None, 25)
+police2 = pygame.font.Font(None, 85)
 
 titre = True
 
@@ -93,9 +94,9 @@ titre2 = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(titre1)
 pygame.sprite.Sprite.__init__(titre2)
 
-titre1.image = police.render(f"Bienvenue sur RACE CAR DRIVING", 1, (250, 250, 250), (0, 0, 0))
+titre1.image = police2.render(f"RACE CAR DRIVING", 1, (255, 0, 0), (0, 0, 0))
 titre1.rect = titre1.image.get_rect()
-titre1.rect.x = 150
+titre1.rect.x = 10
 titre1.rect.y = 300
 
 titre2.image = police.render(f"Appuyez sur [ESPACE] pour commencer à jouer", 1, (250, 250, 250), (0, 0, 0))
