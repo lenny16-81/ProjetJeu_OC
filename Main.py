@@ -67,7 +67,6 @@ t2 = Tuyeau(275, 0)
 t3 = Tuyeau(400, 0)
 
 positions_x = [145, 275, 400]  # Positions fixes sur l'axe x
-powerup = Powerup(random.choice(positions_x), 0)
 fond = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(fond)
 fond.image = pygame.image.load("Route.png").convert()
@@ -108,7 +107,6 @@ liste_des_sprites = pygame.sprite.LayeredUpdates()
 if not titre:
     liste_des_sprites.add(fond, layer=0)
     liste_des_sprites.add(voiture, layer=2)
-    liste_des_sprites.add(powerup, layer=2)
     liste_des_sprites.add(t1, layer=3)
     liste_des_sprites.add(t2, layer=3)
     liste_des_sprites.add(t3, layer=3)
@@ -144,7 +142,6 @@ while running:
        liste_des_sprites.remove(titre2)
        liste_des_sprites.add(fond, layer=0)
        liste_des_sprites.add(voiture, layer=2)
-       liste_des_sprites.add(powerup, layer=2)
        liste_des_sprites.add(t1, layer=3)
        liste_des_sprites.add(t2, layer=3)
        liste_des_sprites.add(t3, layer=3)
@@ -171,17 +168,68 @@ while running:
                        score = 0
                        voiture.vie += 1
                        game = True
-       nombre_aleatoire = random.randint(0, 100)
-       nombre_aleatoireII = random.randint(0,1000)
+       nombre_aleatoire = random.randint(0, 70)
+       nombre_aleatoireII = random.randint(0,10000)
        if game:
            liste_des_sprites.remove(texte1)
            liste_des_sprites.remove(texte2)
            if nombre_aleatoire == 0:
-               position_x_aleatoire = random.choice(positions_x)  # Choisir une des 3 positions
+               i = random.randint(0,2)  # Choisir une des 3 positions
+               if i == 0:
+                   autre_pos1 = positions_x[1]
+                   autre_pos2 = positions_x[2]
+                   pos_ok_1 = True
+                   pos_ok_2 = True
+                   for ennemi in ennemis:
+                       if ennemi.rect.x == autre_pos1:
+                           if ennemi.rect.y < 100:
+                               pos_ok_1 = False
+                       elif ennemi.rect.x == autre_pos2:
+                           if ennemi.rect.y < 100:
+                               pos_ok_2 = False
+
+                   if not pos_ok_1 and not pos_ok_2:
+                       i = random.choice([1,2])
+
+               elif i == 1:
+                   autre_pos1 = positions_x[0]
+                   autre_pos2 = positions_x[2]
+                   pos_ok_1 = True
+                   pos_ok_2 = True
+                   for ennemi in ennemis:
+                       if ennemi.rect.x == autre_pos1:
+                           if ennemi.rect.y < 100:
+                               pos_ok_1 = False
+                       elif ennemi.rect.x == autre_pos2:
+                           if ennemi.rect.y < 100:
+                               pos_ok_2 = False
+
+                   if not pos_ok_1 and not pos_ok_2:
+                       i = random.choice([0, 2])
+
+               elif i == 2:
+                   autre_pos1 = positions_x[0]
+                   autre_pos2 = positions_x[1]
+                   pos_ok_1 = True
+                   pos_ok_2 = True
+                   for ennemi in ennemis:
+                       if ennemi.rect.x == autre_pos1:
+                           if ennemi.rect.y < 100:
+                               pos_ok_1 = False
+                       elif ennemi.rect.x == autre_pos2:
+                           if ennemi.rect.y < 100:
+                               pos_ok_2 = False
+
+                   if not pos_ok_1 and not pos_ok_2:
+                       i = random.choice([0, 1])
+
+               position_x_aleatoire = positions_x[i]
+
                nouvel_ennemi = Ennemi(position_x_aleatoire, -50)
                liste_des_sprites.add(nouvel_ennemi, layer=2)
                ennemis.append(nouvel_ennemi)
            if nombre_aleatoireII == 0:
+               print("AJOUT")
                position_x_aleatoireII = random.choice(positions_x)
                nouveau_powerup = Powerup(position_x_aleatoireII, -50)
                liste_des_sprites.add(nouveau_powerup, layer=2)
@@ -192,6 +240,38 @@ while running:
            lescore.rect.x = 10
            lescore.rect.y = 10
            liste_des_sprites.add(lescore)
+
+       for powerup in powerups:
+           if powerup.rect.y > 850:
+               powerups.remove(powerup)
+               powerup.kill()
+               liste_des_sprites.remove(powerup)
+       for powerup in powerups:
+           if powerup.actif:
+               powerup.rect.x = voiture.rect.x - 15
+               powerup.rect.y = voiture.rect.y - 10
+           else:
+               powerup.update()
+
+           if powerup.rect.colliderect(voiture.rect):
+               powerup.actif = True
+               #print("Bouclier actif")
+               #print("Bouclier inactif")
+       for powerup in powerups:
+           if not powerup.actif:
+               continue
+           for ennemi in ennemis:
+               if powerup.rect.colliderect(ennemi.rect):
+                   print("Collision entre powerup et ennemi !")
+                   ennemis.remove(ennemi)
+                   liste_des_sprites.remove(ennemi)
+                   powerups.remove(powerup)
+                   liste_des_sprites.remove(powerup)
+                   powerup.actif = False
+                   ennemi.kill()
+                   powerup.kill()
+                   score += 100
+
        for ennemi in ennemis:
            ennemi.update()
            for ennemi in ennemis:
@@ -224,34 +304,6 @@ while running:
            liste_des_sprites.add(texte2)
            pygame.display.flip()
 
-       for powerup in powerups:
-           if powerup.rect.y > 850:
-               powerups.remove(powerup)
-               powerup.kill()
-               liste_des_sprites.remove(powerup)
-       for powerup in powerups:
-           if powerup.actif:
-               powerup.rect.x = voiture.rect.x - 15
-               powerup.rect.y = voiture.rect.y - 10
-           else:
-               powerup.update()
-
-           if powerup.rect.colliderect(voiture.rect):
-               powerup.actif = True
-               #print("Bouclier actif")
-               #print("Bouclier inactif")
-       for powerup in powerups:
-           if not powerup.actif:
-               continue
-           for ennemi in ennemis:
-               if powerup.rect.colliderect(ennemi.rect):
-                   print("Collision entre powerup et ennemi !")
-                   ennemis.remove(ennemi)
-                   powerups.remove(powerup)
-                   ennemi.kill()
-                   powerup.kill()
-                   score += 100
-                   bouclier = False
 
        if game == False:
            liste_des_sprites.empty()
