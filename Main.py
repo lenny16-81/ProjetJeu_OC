@@ -23,12 +23,13 @@ class Ennemi(pygame.sprite.Sprite):
        super().__init__()
        couleurs_voitures = ["Voiture_Blanche.png", "Voiture_Orange.png", "Voiture_Bleue.png"]
        voiture_image = random.choice(couleurs_voitures)
+       vitesse_ennemi = [2, 2.5, 3, 3.5, 4]
        self.image = pygame.image.load(voiture_image).convert_alpha()
        self.image = pygame.transform.flip(self.image, False, True)
        self.rect = self.image.get_rect()
        self.rect.x = x
        self.rect.y = y
-       self.speed = 2
+       self.speed = random.choice(vitesse_ennemi)
    def update(self):
        self.rect.y += self.speed
        if self.rect.top > HAUTEUR:
@@ -169,7 +170,7 @@ while running:
                        score = 0
                        voiture.vie += 1
                        game = True
-       nombre_aleatoire = random.randint(0, 70)
+       nombre_aleatoire = random.randint(0, 100)
        nombre_aleatoireII = random.randint(0,10000)
        if game:
            liste_des_sprites.remove(texte1)
