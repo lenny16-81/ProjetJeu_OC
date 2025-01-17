@@ -81,7 +81,8 @@ voiture = Voiture(1)
 gameover = False
 bouclier = False
 police = pygame.font.Font(None, 25)
-police2 = pygame.font.Font(None, 85)
+police2 = pygame.font.Font(None, 30)
+police3 = pygame.font.Font(None, 80)
 
 titre = True
 
@@ -92,18 +93,32 @@ for event in pygame.event.get():
 
 titre1 = pygame.sprite.Sprite()
 titre2 = pygame.sprite.Sprite()
+titre3 = pygame.sprite.Sprite()
+logo_jeu = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(titre1)
 pygame.sprite.Sprite.__init__(titre2)
+pygame.sprite.Sprite.__init__(titre3)
+pygame.sprite.Sprite.__init__(logo_jeu)
 
-titre1.image = police2.render(f"RACE CAR DRIVING", 1, (255, 0, 0), (0, 0, 0))
+titre1.image = police.render("Par Arnaud et Lenny ©", 1, (100, 100, 100), (0, 0, 0))
 titre1.rect = titre1.image.get_rect()
-titre1.rect.x = 10
-titre1.rect.y = 300
+titre1.rect.x = 400
+titre1.rect.y = 770
 
-titre2.image = police.render(f"Appuyez sur [ESPACE] pour commencer à jouer", 1, (250, 250, 250), (0, 0, 0))
+titre2.image = police2.render("Appuyez sur [ESPACE] pour commencer à jouer", 1, (250, 250, 250), (0, 0, 0))
 titre2.rect = titre1.image.get_rect()
-titre2.rect.x = 100
-titre2.rect.y = 400
+titre2.rect.x = 60
+titre2.rect.y = 560
+
+titre3.image = police2.render("Utilisez les touches [A] et [D] pour vous déplacer", 1, (250, 250, 250), (0, 0, 0))
+titre3.rect = titre1.image.get_rect()
+titre3.rect.x = 60
+titre3.rect.y = 500
+
+logo_jeu.image = pygame.image.load("Logo.png").convert_alpha()
+logo_jeu.rect = logo_jeu.image.get_rect()
+logo_jeu.rect.x = 40
+logo_jeu.rect.y = -20
 
 liste_des_sprites = pygame.sprite.LayeredUpdates()
 if not titre:
@@ -115,13 +130,17 @@ if not titre:
 if titre:
     liste_des_sprites.add(titre1, layer=2)
     liste_des_sprites.add(titre2, layer=2)
+    liste_des_sprites.add(titre3, layer=2)
+    liste_des_sprites.add(logo_jeu, layer=2)
 
 
 texte1 = pygame.sprite.Sprite()
 texte2 = pygame.sprite.Sprite()
+texte3 = pygame.sprite.Sprite()
 lescore = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(texte1)
 pygame.sprite.Sprite.__init__(texte2)
+pygame.sprite.Sprite.__init__(texte3)
 pygame.sprite.Sprite.__init__(lescore)
 
 ennemis = []
@@ -136,12 +155,16 @@ pygame.key.set_repeat(400, 300)
 while running:
    if titre:
        for event in pygame.event.get():
+           if event.type == pygame.QUIT:
+               running = False
            if event.type == KEYDOWN:
                if event.key == K_SPACE:
                    titre = False
    if not titre:
        liste_des_sprites.remove(titre1)
        liste_des_sprites.remove(titre2)
+       liste_des_sprites.remove(titre3)
+       liste_des_sprites.remove(logo_jeu)
        liste_des_sprites.add(fond, layer=0)
        liste_des_sprites.add(voiture, layer=2)
        liste_des_sprites.add(t1, layer=3)
@@ -175,6 +198,7 @@ while running:
        if game:
            liste_des_sprites.remove(texte1)
            liste_des_sprites.remove(texte2)
+           liste_des_sprites.remove(texte3)
            if nombre_aleatoire == 0:
                i = random.randint(0,2)  # Choisir une des 3 positions
                if i == 0:
@@ -231,7 +255,6 @@ while running:
                liste_des_sprites.add(nouvel_ennemi, layer=2)
                ennemis.append(nouvel_ennemi)
            if nombre_aleatoireII == 0:
-               print("AJOUT")
                position_x_aleatoireII = random.choice(positions_x)
                nouveau_powerup = Powerup(position_x_aleatoireII, -50)
                liste_des_sprites.add(nouveau_powerup, layer=2)
@@ -257,14 +280,11 @@ while running:
 
            if powerup.rect.colliderect(voiture.rect):
                powerup.actif = True
-               #print("Bouclier actif")
-               #print("Bouclier inactif")
        for powerup in powerups:
            if not powerup.actif:
                continue
            for ennemi in ennemis:
                if powerup.rect.colliderect(ennemi.rect):
-                   print("Collision entre powerup et ennemi !")
                    ennemis.remove(ennemi)
                    liste_des_sprites.remove(ennemi)
                    powerups.remove(powerup)
@@ -294,7 +314,7 @@ while running:
            voiture.kill()
            voiture.rect.x = 8000
            voiture.rect.y = 8000
-           texte1.image = police.render(f"Game Over \n Votre score: {score} \n Ennemis ésquivés: {ennemi_manque} !", 1, (10, 10, 10), (150, 150, 150))
+           texte1.image = police.render(f"\n Votre score: {score} \n Ennemis ésquivés: {ennemi_manque} ! \n", 1, (10, 10, 10), (150, 150, 150))
            texte1.rect = texte1.image.get_rect()
            texte1.rect.centerx = fenetre.get_rect().centerx
            texte1.rect.centery = fenetre.get_rect().centery
@@ -302,8 +322,13 @@ while running:
            texte2.rect = texte2.image.get_rect()
            texte2.rect.centerx = fenetre.get_rect().centerx
            texte2.rect.centery = fenetre.get_rect().centery + 50
+           texte3.image = police3.render("GAME OVER", 1, (250, 0, 0), (150, 150, 150))
+           texte3.rect = texte3.image.get_rect()
+           texte3.rect.centerx = fenetre.get_rect().centerx
+           texte3.rect.centery = fenetre.get_rect().centery - 100
            liste_des_sprites.add(texte1)
            liste_des_sprites.add(texte2)
+           liste_des_sprites.add(texte3)
            pygame.display.flip()
 
 
@@ -312,6 +337,7 @@ while running:
            liste_des_sprites.add(fond)
            liste_des_sprites.add(texte1)
            liste_des_sprites.add(texte2)
+           liste_des_sprites.add(texte3)
            liste_des_sprites.add(t1, layer=3)
            liste_des_sprites.add(t2, layer=3)
            liste_des_sprites.add(t3, layer=3)
