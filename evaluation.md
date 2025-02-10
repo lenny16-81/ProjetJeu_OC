@@ -1,6 +1,6 @@
 # Evaluation
 ## Commentaire générale
-
+Vous avez créé un jeu dont le concept est très simple mais qui fonctionne vraiment bien ! L'ajout des bonus et de la fonction de "replay" sont vraiment bien intégrées. Il aurait été facile dans votre jeu d'utiliser la POO pour intégrer plusieurs types d'ennemis ou de bonus. C'est un beau projet qui n'augure que du bon pour la suite !
 ## Grille d'évaluation
 | Critères                           | Points max | Points obtenus | Commentaires |
 |-------------------------------------|------------|----------------|--------------|
